@@ -1,6 +1,27 @@
 # ⚡ ZapTorrent (Work in progress)
 
-ZapTorrent is a command-line torrent client that allows users to parse torrent metadata, retrieve peer lists, and start downloading files using the BitTorrent protocol.
+**ZapTorrent** is a high-performance, command-line BitTorrent client written in Python. It allows users to:
+
+- Parse `.torrent` metadata
+- Retrieve peer lists from trackers
+- Download files piece-by-piece using the BitTorrent protocol
+
+ZapTorrent is designed for efficiency and includes features to optimize peer selection and download throughput.
+
+
+## Performance Optimization Used (in [main.py](/src/main.py))
+<img src = "/extras/optimization.webp">
+
+- Parallel download workers choose a peer and piece to download.
+- If a peer responds successfully, it’s moved to the front of the queue (preferred).
+- If a peer fails, it's sent to the back of the queue (penalized).
+- Failed downloads are retried by a dedicated **Failed Piece Worker Pool** using an **end-game strategy** — request from all peers and cancel others when one succeeds.
+- If a piece still fails, it's added back for future retry.
+
+## Future Feature Implementations:
+- Connection pooling for better peer reuse
+- Periodic tracker refresh to discover new peers
+- Support for **UDP tracker requests**
 
 ## Prerequisites
 
@@ -52,28 +73,6 @@ Example:
 ```sh
 python src/main.py --download ubuntu.torrent --output /home/user/Downloads --verbose
 ```
-
-## Features Implemented So Far
-
-- Parsing `.torrent` files to extract metadata.
-
-- Retrieving peer lists from trackers.
-
-- Basic single-file assembly for downloads.
-
-- Command-line options for parsing, downloading, and specifying output directories.
-
-- Verbose logging support.
-
-
-## Roadmap
-
-- Implementing multi-file torrent support.
-
-- Handling peer communication and piece exchange.
-
-- Adding error handling and performance optimizations.
-
 
 ## License
 
